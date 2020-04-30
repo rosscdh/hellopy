@@ -1,0 +1,14 @@
+bases:
+- ../base
+
+namePrefix: prod-
+
+commonLabels:
+  variant: prod
+
+patches:
+  - patch-route53-url.yaml
+
+resources:
+  - deployment.yaml
+  - svc.yaml

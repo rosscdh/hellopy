@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1 # Changed from apps/v1
+kind: Rollout # Changed from Deployment
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+    # variant: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - name: kustomize-test
+        image: rosscdh/hellopy:3dec2d3
+        imagePullPolicy: Always
+        env:
+          - name: DEPLOY_VERSION
+            value: 3dec2d3 with magic red monkies
+        livenessProbe:
+          httpGet:
+            path: /healthy
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 8000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "210m"
+          limits:
+            memory: "118Mi"
+            cpu: "500m"
+  # ----- Everything above this comment are the same as a deployment -----
+  strategy:
+    blueGreen:                                  # A new field that used to provide configurable options for a BlueGreenUpdate strategy
+      previewService: helloworld-svc-preview    # Reference to a service that can serve traffic to a new image before it receives the active traffic
+      activeService: helloworld-svc-active      # Reference to a service that serves end-user traffic to the replica set
+  # strategy:
+  #   canary:
+  #     steps:
+  #     - setWeight: 10
+  #     - pause:
+  #         duration: 30
+  #     - setWeight: 40
+  #     - pause: {}

@@ -1,0 +1,40 @@
+# https://argoproj.github.io/argo-cd/user-guide/resource_hooks/
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: presync-slack-bang
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,HookFailed
+spec:
+  template:
+    metadata:
+      name: slack-bang
+    spec:
+      containers:
+      - name: pi
+        image: rosscdh/slack_bang:latest
+        env:
+          DEFAULT_SLACK_WEBHOOK_URI: http://hooks.slack
+      # Do not restart containers after they exit
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postsync-slack-bang
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,HookFailed
+spec:
+  template:
+    metadata:
+      name: slack-bang
+    spec:
+      containers:
+      - name: pi
+        image: rosscdh/slack_bang:latest
+        env:
+          DEFAULT_SLACK_WEBHOOK_URI: http://hooks.slack
+      # Do not restart containers after they exit
+      restartPolicy: Never

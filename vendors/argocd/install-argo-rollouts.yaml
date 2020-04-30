@@ -1,0 +1,503 @@
+# This is an auto-generated file. DO NOT EDIT
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: rollouts.argoproj.io
+spec:
+  group: argoproj.io
+  names:
+    kind: Rollout
+    plural: rollouts
+    shortNames:
+    - ro
+  scope: Namespaced
+  subresources:
+    scale:
+      labelSelectorPath: .status.selector
+      specReplicasPath: .spec.replicas
+      statusReplicasPath: .status.HPAReplicas
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata: {}
+        spec:
+          description: RolloutSpec is the spec for a Rollout resource
+          properties:
+            minReadySeconds:
+              description: Minimum number of seconds for which a newly created pod
+                should be ready without any of its container crashing, for it to be
+                considered available. Defaults to 0 (pod will be considered available
+                as soon as it is ready)
+              format: int32
+              type: integer
+            paused:
+              description: Paused pauses the rollout at its current step.
+              type: boolean
+            progressDeadlineSeconds:
+              description: ProgressDeadlineSeconds The maximum time in seconds for
+                a rollout to make progress before it is considered to be failed. Argo
+                Rollouts will continue to process failed rollouts and a condition
+                with a ProgressDeadlineExceeded reason will be surfaced in the rollout
+                status. Note that progress will not be estimated during the time a
+                rollout is paused. Defaults to 600s.
+              format: int32
+              type: integer
+            replicas:
+              description: Number of desired pods. This is a pointer to distinguish
+                between explicit zero and not specified. Defaults to 1.
+              format: int32
+              type: integer
+            revisionHistoryLimit:
+              description: The number of old ReplicaSets to retain. If unspecified,
+                will retain 10 old ReplicaSets
+              format: int32
+              type: integer
+            selector: {}
+            strategy:
+              description: RolloutStrategy defines strategy to apply during next rollout
+              properties:
+                blueGreen:
+                  description: BlueGreenStrategy defines parameters for Blue Green
+                    deployment
+                  properties:
+                    activeService:
+                      description: Name of the service that the rollout modifies as
+                        the active service.
+                      type: string
+                    autoPromotionSeconds:
+                      description: AutoPromotionSeconds automatically promotes the
+                        current ReplicaSet to active after the specified pause delay
+                        in seconds after the ReplicaSet becomes ready. If omitted,
+                        the Rollout enters and remains in a paused state until manually
+                        resumed by resetting spec.Paused to false.
+                      format: int32
+                      type: integer
+                    previewReplicaCount:
+                      description: PreviewReplica the number of replicas to run under
+                        the preview service before the switchover. Once the rollout
+                        is resumed the new replicaset will be full scaled up before
+                        the switch occurs
+                      format: int32
+                      type: integer
+                    previewService:
+                      description: Name of the service that the rollout modifies as
+                        the preview service.
+                      type: string
+                    scaleDownDelaySeconds:
+                      description: ScaleDownDelaySeconds adds a delay before scaling
+                        down the previous replicaset. If omitted, the Rollout waits
+                        30 seconds before scaling down the previous ReplicaSet. A
+                        minimum of 30 seconds is recommended to ensure IP table propagation
+                        across the nodes in a cluster. See https://github.com/argoproj/argo-rollouts/issues/19#issuecomment-476329960
+                        for more information
+                      format: int32
+                      type: integer
+                canary:
+                  description: CanaryStrategy defines parameters for a Replica Based
+                    Canary
+                  properties:
+                    maxSurge:
+                      anyOf:
+                      - type: string
+                      - type: integer
+                    maxUnavailable:
+                      anyOf:
+                      - type: string
+                      - type: integer
+                    steps:
+                      description: Steps define the order of phases to execute the
+                        canary deployment
+                      items:
+                        description: CanaryStep defines a step of a canary deployment.
+                        properties:
+                          pause:
+                            description: RolloutPause defines a pause stage for a
+                              rollout
+                            properties:
+                              duration:
+                                description: Duration the amount of time to wait before
+                                  moving to the next step.
+                                format: int32
+                                type: integer
+                          setWeight:
+                            description: SetWeight sets what percentage of the newRS
+                              should receive
+                            format: int32
+                            type: integer
+                      type: array
+            template: {}
+          required:
+          - selector
+          - template
+        status:
+          description: RolloutStatus is the status for a Rollout resource
+          properties:
+            HPAReplicas:
+              description: HPAReplicas the number of non-terminated replicas that
+                are receiving active traffic
+              format: int32
+              type: integer
+            availableReplicas:
+              description: Total number of available pods (ready for at least minReadySeconds)
+                targeted by this rollout.
+              format: int32
+              type: integer
+            blueGreen:
+              description: BlueGreenStatus status fields that only pertain to the
+                blueGreen rollout
+              properties:
+                activeSelector:
+                  description: ActiveSelector indicates which replicas set the active
+                    service is serving traffic to
+                  type: string
+                previewSelector:
+                  description: PreviewSelector indicates which replicas set the preview
+                    service is serving traffic to
+                  type: string
+                previousActiveSelector:
+                  description: PreviousActiveSelector indicates the last selector
+                    that the active service used. This is used to know which replicaset
+                    to avoid scaling down for the scale down delay
+                  type: string
+                scaleDownDelayStartTime: {}
+                scaleUpPreviewCheckPoint:
+                  description: ScaleUpPreviewCheckPoint indicates that the Replicaset
+                    receiving traffic from the preview service is ready to be scaled
+                    up after the rollout is unpaused
+                  type: boolean
+            canary:
+              description: CanaryStatus status fields that only pertain to the canary
+                rollout
+              properties:
+                stableRS:
+                  description: StableRS indicates the last replicaset that walked
+                    through all the canary steps or was the only replicaset
+                  type: string
+            collisionCount:
+              description: Count of hash collisions for the Rollout. The Rollout controller
+                uses this field as a collision avoidance mechanism when it needs to
+                create the name for the newest ReplicaSet.
+              format: int32
+              type: integer
+            conditions:
+              description: Conditions a list of conditions a rollout can have.
+              items:
+                description: RolloutCondition describes the state of a rollout at
+                  a certain point.
+                properties:
+                  lastTransitionTime: {}
+                  lastUpdateTime: {}
+                  message:
+                    description: A human readable message indicating details about
+                      the transition.
+                    type: string
+                  reason:
+                    description: The reason for the condition's last transition.
+                    type: string
+                  status:
+                    description: Status of the condition, one of True, False, Unknown.
+                    type: string
+                  type:
+                    description: Type of deployment condition.
+                    type: string
+                required:
+                - type
+                - status
+                - lastUpdateTime
+                - lastTransitionTime
+                - reason
+                - message
+              type: array
+            currentPodHash:
+              description: CurrentPodHash the hash of the current pod template
+              type: string
+            currentStepHash:
+              description: CurrentStepHash the hash of the current list of steps for
+                the current strategy. This is used to detect when the list of current
+                steps change
+              type: string
+            currentStepIndex:
+              description: CurrentStepIndex defines the current step of the rollout
+                is on. If the current step index is null, the controller will execute
+                the rollout.
+              format: int32
+              type: integer
+            observedGeneration:
+              description: The generation observed by the rollout controller by taking
+                a hash of the spec.
+              type: string
+            pauseStartTime: {}
+            readyReplicas:
+              description: Total number of ready pods targeted by this rollout.
+              format: int32
+              type: integer
+            replicas:
+              description: Total number of non-terminated pods targeted by this rollout
+                (their labels match the selector).
+              format: int32
+              type: integer
+            selector:
+              description: Selector that identifies the pods that are receiving active
+                traffic
+              type: string
+            updatedReplicas:
+              description: Total number of non-terminated pods targeted by this rollout
+                that have the desired template spec.
+              format: int32
+              type: integer
+  version: v1alpha1
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: rollouts-controller
+    app.kubernetes.io/name: argo-rollouts
+    app.kubernetes.io/part-of: argo-rollouts
+  name: argo-rollouts
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/component: rollouts-controller
+    app.kubernetes.io/name: argo-rollouts-role
+    app.kubernetes.io/part-of: argo-rollouts
+  name: argo-rollouts-role
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - rollouts
+  verbs:
+  - watch
+  - get
+  - list
+  - update
+  - patch
+- apiGroups:
+  - apps
+  resources:
+  - replicasets
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: aggregate-cluster-role
+    app.kubernetes.io/name: argo-rollouts-aggregate-to-admin
+    app.kubernetes.io/part-of: argo-rollouts
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+  name: argo-rollouts-aggregate-to-admin
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - rollouts
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: aggregate-cluster-role
+    app.kubernetes.io/name: argo-rollouts-aggregate-to-edit
+    app.kubernetes.io/part-of: argo-rollouts
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+  name: argo-rollouts-aggregate-to-edit
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - rollouts
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: aggregate-cluster-role
+    app.kubernetes.io/name: argo-rollouts-aggregate-to-view
+    app.kubernetes.io/part-of: argo-rollouts
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+  name: argo-rollouts-aggregate-to-view
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - rollouts
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: rollouts-controller
+    app.kubernetes.io/name: argo-rollouts-clusterrole
+    app.kubernetes.io/part-of: argo-rollouts
+  name: argo-rollouts-clusterrole
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - replicasets
+  verbs:
+  - watch
+  - get
+  - list
+  - create
+  - update
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - watch
+  - get
+  - list
+  - patch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - rollouts
+  verbs:
+  - get
+  - list
+  - update
+  - watch
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: rollouts-controller
+    app.kubernetes.io/name: argo-rollouts-role-binding
+    app.kubernetes.io/part-of: argo-rollouts
+  name: argo-rollouts-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argo-rollouts-role
+subjects:
+- kind: ServiceAccount
+  name: argo-rollouts
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: rollouts-controller
+    app.kubernetes.io/name: argo-rollouts-clusterrolebinding
+    app.kubernetes.io/part-of: argo-rollouts
+  name: argo-rollouts-clusterrolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argo-rollouts-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: argo-rollouts
+  namespace: argo-rollouts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/name: argo-rollouts-metrics
+    app.kubernetes.io/part-of: argo-rollouts
+  name: argo-rollouts-metrics
+spec:
+  ports:
+  - name: metrics
+    port: 8090
+    protocol: TCP
+    targetPort: 8090
+  selector:
+    app.kubernetes.io/name: argo-rollouts
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: rollouts-controller
+    app.kubernetes.io/name: argo-rollouts
+    app.kubernetes.io/part-of: argo-rollouts
+  name: argo-rollouts
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argo-rollouts
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: argo-rollouts
+    spec:
+      containers:
+      - command:
+        - /bin/rollouts-controller
+        image: argoproj/argo-rollouts:v0.3.1
+        imagePullPolicy: Always
+        name: argo-rollouts
+      serviceAccountName: argo-rollouts

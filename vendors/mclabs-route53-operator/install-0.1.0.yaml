@@ -1,0 +1,198 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: mclabsroute53resources.labs.mindcurv.com
+spec:
+  group: labs.mindcurv.com
+  names:
+    kind: mcLabsRoute53Resource
+    plural: mclabsroute53resources
+    shortNames:
+    - mcl-r53
+    singular: mclabsroute53resource
+  scope: Namespaced
+  versions:
+  - name: v1
+    served: true
+    storage: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: labs-mindcurv-sa
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: mc-labs-role-namespaced
+  namespace: default
+rules:
+- apiGroups:
+  - zalando.org
+  resources:
+  - kopfpeerings
+  verbs:
+  - list
+  - watch
+  - patch
+  - get
+- apiGroups:
+  - events.k8s.io
+  resources:
+  - events
+  verbs:
+  - create
+- apiGroups:
+  - labs.mindcurv.com
+  resources:
+  - mcLabsRoute53Resource
+  - mclabsroute53resources
+  verbs:
+  - list
+  - watch
+  - patch
+  - get
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - list
+  - watch
+  - patch
+  - get
+- apiGroups:
+  - batch
+  - extensions
+  resources:
+  - jobs
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - persistentvolumeclaims
+  - events
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: mc-labs-role-cluster
+rules:
+- apiGroups:
+  - zalando.org
+  resources:
+  - clusterkopfpeerings
+  verbs:
+  - list
+  - watch
+  - patch
+  - get
+- apiGroups:
+  - events.k8s.io
+  resources:
+  - events
+  verbs:
+  - create
+- apiGroups:
+  - labs.mindcurv.com
+  resources:
+  - mcLabsRoute53Resource
+  - mclabsroute53resources
+  verbs:
+  - list
+  - watch
+  - patch
+  - get
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - list
+  - watch
+  - patch
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: mc-labs-sa-rolebinding-namespaced
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: mc-labs-role-namespaced
+subjects:
+- kind: ServiceAccount
+  name: labs-mindcurv-sa
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: mc-labs-sa-rolebinding-cluster
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: mc-labs-role-cluster
+subjects:
+- kind: ServiceAccount
+  name: labs-mindcurv-sa
+  namespace: default
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aws-route53-creds
+  namespace: default
+stringData:
+  aws_secrets.yml: |-
+    aws_acccess_key_id: $AWS_ACCCESS_KEY_ID
+    aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    region: $REGION
+type: Opaque
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: labs-mc-route53-operator
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: labs-mc-route53-operator
+  template:
+    metadata:
+      labels:
+        application: labs-mc-route53-operator
+    spec:
+      containers:
+      - image: rosscdh/labs-mc-route53-operator:latest
+        name: mc-labs-route53-operator
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 250m
+            memory: 64Mi
+        volumeMounts:
+        - mountPath: /opt/mc-slabs/aws-route53-creds/aws_secrets.yml
+          name: aws-route53-creds
+          readOnly: true
+          subPath: aws_secrets.yml
+      serviceAccountName: labs-mindcurv-sa
+      volumes:
+      - name: aws-route53-creds
+        secret:
+          items:
+          - key: aws_secrets.yml
+            path: aws_secrets.yml
+          secretName: aws-route53-creds

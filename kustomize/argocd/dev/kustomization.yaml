@@ -1,0 +1,6 @@
+namePrefix: dev-
+
+resources:
+  - deployment.yaml
+  - svc.yaml
+  - ingress.yaml

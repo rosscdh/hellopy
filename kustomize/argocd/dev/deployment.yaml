@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+spec:
+  replicas: 2 
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - name: kustomize-test
+        image: rosscdh/hellopy:latest
+        imagePullPolicy: Always
+        env:
+          - name: DEPLOY_VERSION
+            value: jan is a shade of pink
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "210m"
+          limits:
+            memory: "118Mi"
+            cpu: "500m"

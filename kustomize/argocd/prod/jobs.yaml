@@ -1,0 +1,66 @@
+# https://argoproj.github.io/argo-cd/user-guide/resource_hooks/
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: presync-slack-bang
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,HookFailed
+spec:
+  template:
+    metadata:
+      name: slack-bang
+    spec:
+      containers:
+      - name: pi
+        image: rosscdh/slack_bang:latest
+        env:
+          - name: DEFAULT_SLACK_WEBHOOK_URI
+            value: https://hooks.slack.com/
+        command: ["sb", "--channel", "", "--text", "PreSync Hook - Do various things that need to be done before deploy"]
+      # Do not restart containers after they exit
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sync-slack-bang
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,HookFailed
+spec:
+  template:
+    metadata:
+      name: slack-bang
+    spec:
+      containers:
+      - name: pi
+        image: rosscdh/slack_bang:latest
+        env:
+          - name: DEFAULT_SLACK_WEBHOOK_URI
+            value: https://hooks.slack.com/
+        command: ["sb", "--channel", "", "--text", "Sync Hook - waiting on GreenBlue approval"]
+      # Do not restart containers after they exit
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postsync-slack-bang
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,HookFailed
+spec:
+  template:
+    metadata:
+      name: slack-bang
+    spec:
+      containers:
+      - name: pi
+        image: rosscdh/slack_bang:latest
+        env:
+          - name: DEFAULT_SLACK_WEBHOOK_URI
+            value: https://hooks.slack.com/
+        command: ["sb", "--channel", "", "--text", "PostSync Hook - deployed"]
+      # Do not restart containers after they exit
+      restartPolicy: Never

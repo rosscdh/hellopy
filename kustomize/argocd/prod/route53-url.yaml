@@ -1,0 +1,23 @@
+apiVersion: labs.mindcurv.com/v1
+kind: mcLabsRoute53Resource
+metadata:
+  name: active-hellopy-r53
+  namespace: default
+spec:
+  zoneName: ruhrpod.io
+  zoneSubDomain: argocd-active
+  targetValue: www.mindcurv.com
+  recordType: CNAME
+  ttl: 300
+---
+apiVersion: labs.mindcurv.com/v1
+kind: mcLabsRoute53Resource
+metadata:
+  name: preview-hellopy-r53
+  namespace: default
+spec:
+  zoneName: ruhrpod.io
+  zoneSubDomain: argocd-preview
+  targetValue: www.mindcurv.com
+  recordType: CNAME
+  ttl: 300

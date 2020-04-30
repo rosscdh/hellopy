@@ -1,0 +1,3 @@
+resources:
+  - route53-url.yaml
+  - jobs.yaml

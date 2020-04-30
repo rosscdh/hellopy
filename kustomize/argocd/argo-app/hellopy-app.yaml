@@ -1,0 +1,20 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hellopy
+  namespace: argocd
+spec:
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: sandbox
+  project: sandbox
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+  source:
+    path: kustomize/argocd/dev
+    repoURL: https://github.com/rosscdh/hellopy.git
+    targetRevision: HEAD
+  sourceType: Kustomize

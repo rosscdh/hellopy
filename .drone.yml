@@ -1,0 +1,13 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: build test image
+    image: docker:latest
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+    commands:
+      - docker build --no-cache -t testg:${DRONE_COMMIT} .

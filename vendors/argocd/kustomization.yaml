@@ -1,0 +1,6 @@
+namespace: argo-cd
+
+resources:
+  - namespace.yaml
+  - install-argo-cd.yaml
+  - install-argo-rollouts.yaml

@@ -1,0 +1,5 @@
+resources:
+  - jobs.yaml
+  - route53-url.yaml
+  - rollout.yaml
+  - svc.yaml

@@ -1,0 +1,11 @@
+apiVersion: labs.mindcurv.com/v1
+kind: mcLabsRoute53Resource
+metadata:
+  name: hellopy-r53-cname
+  namespace: default
+spec:
+  zoneName: ruhrpod.io
+  zoneSubDomain: hellodavid
+  targetValue: www.mindcurv.com
+  recordType: CNAME
+  ttl: 300
