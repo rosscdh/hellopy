@@ -46,7 +46,7 @@ spec:
             cpu: 210m
             memory: 64Mi
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -65,9 +65,12 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: dev-helloworld-svc
-          servicePort: 8000
+          service:
+            name: dev-helloworld-svc
+            port:
+              name: web
         path: /
+        pathType: Prefix
   tls:
   - hosts:
     - hellopy.tes-build-nonprod.cookidoo.vorwerk-digital.com
