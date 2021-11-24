@@ -9,4 +9,4 @@ kind: Kustomization
 images:
 - name: hellopy-demo
   newName: rosscdh/hellopy-demo
-  newTag: 0.0.1
+  newTag: cb48fc16

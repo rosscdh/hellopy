@@ -58,7 +58,7 @@ metadata:
   name: dev-helloworld-ingress
 spec:
   rules:
-  - host: hellopy.eu-tm-nonprod.vorwerk-digital.com
+  - host: hellopy.tes-build-nonprod.cookidoo.vorwerk-digital.com
     http:
       paths:
       - backend:
@@ -67,5 +67,5 @@ spec:
         path: /
   tls:
   - hosts:
-    - hellopy.eu-tm-nonprod.vorwerk-digital.com
+    - hellopy.tes-build-nonprod.cookidoo.vorwerk-digital.com
     secretName: hellopy-certificate-secret
