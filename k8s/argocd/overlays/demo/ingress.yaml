@@ -17,8 +17,8 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: helloworld-svc
-              servicePort: 8443
+              serviceName: dev-helloworld-svc
+              servicePort: 8000
             path: /
   tls:
     - hosts:
