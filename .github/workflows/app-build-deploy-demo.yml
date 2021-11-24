@@ -1,0 +1,46 @@
+name: UAT - Build Test, Push image to ECR and Generate k8s Manifest for ArgoCD
+on:
+  push:
+    branches:
+      - 'demo/*'
+jobs:
+  push-to-ecr:
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: demo
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      # - name: Login to ECR
+      #   id: ecr
+      #   uses: jwalton/gh-ecr-login@v1
+      #   with:
+      #     access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     region: eu-west-2
+      # - name: Build Test and Push to ECR
+      #   run: |
+      #     export CURRENT_RELEASE_TAG=$(echo ${GITHUB_SHA} | cut -c1-8)
+      #     make build ci-test
+      #     make push
+      - name: CD Release for ArgoCD application
+        uses: stefanprodan/kube-tools@v1
+        with:
+          kustomize: 3.5.5
+          command: |
+            export CURRENT_RELEASE_TAG=$(echo ${GITHUB_SHA} | cut -c1-8)
+            make render-k8s
+      - name: Commit Back
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "[skip ci] Updated rendered k8s yaml"
+          branch: master
+          commit_options: '--no-verify --signoff'
+      - name: Sync ArgoCD Application
+        uses: omegion/argocd-app-actions@master
+        with:
+          address: ${{ secrets.ARGOCD_HOST }}
+          token: ${{ secrets.DEMO_ARGOCD_TOKEN }}
+          appName: "demo-uat"

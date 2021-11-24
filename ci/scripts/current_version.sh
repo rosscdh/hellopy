@@ -1,0 +1,1 @@
+cat src/setup.py | grep __version__ | awk '{print $3}' | tr -d '"' | tr -d "[:blank:]"

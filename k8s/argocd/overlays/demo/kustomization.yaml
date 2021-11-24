@@ -1,7 +1,12 @@
+namePrefix: dev-
+
+resources:
+- deployment.yaml
+- svc.yaml
+- ingress.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-resources:
-- kustomize/argocd/dev
 images:
 - name: hellopy-demo
   newName: rosscdh/hellopy-demo
+  newTag: 0.0.1
