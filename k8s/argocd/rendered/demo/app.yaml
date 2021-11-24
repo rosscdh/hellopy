@@ -4,9 +4,10 @@ metadata:
   name: dev-helloworld-svc
 spec:
   ports:
-  - port: 8000
+  - name: web
+    port: 8000
     protocol: TCP
-    targetPort: 8000
+    targetPort: web
   selector:
     app: helloworld
   type: ClusterIP
@@ -36,6 +37,7 @@ spec:
         name: kustomize-test
         ports:
         - containerPort: 8000
+          name: web
         resources:
           limits:
             cpu: 500m

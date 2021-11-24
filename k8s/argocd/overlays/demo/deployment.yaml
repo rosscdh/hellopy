@@ -19,7 +19,8 @@ spec:
         image: rosscdh/hellopy:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8000
+        - name: web
+          containerPort: 8000
         env:
           - name: DEPLOY_VERSION
             value: jan is a shade of pink
