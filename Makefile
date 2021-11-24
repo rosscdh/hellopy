@@ -52,7 +52,7 @@ ci-test:
 login:
  	$(aws ecr get-login-password --profile MOS-INFRA --region eu-west-2 | docker login --username AWS --password-stdin 439304389429.dkr.ecr.eu-west-2.amazonaws.com)
 
-push: login
+push:
 	@echo ---------------------------------
 	@echo Will Push: ${NAME}:${CURRENT_RELEASE_TAG}
 	@echo ---------------------------------
