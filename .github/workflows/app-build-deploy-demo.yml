@@ -41,3 +41,5 @@ jobs:
           address: ${{ secrets.ARGOCD_HOST }}
           token: ${{ secrets.ARGOCD_TOKEN }}
           appName: "hellopy-demo"
+
+          
