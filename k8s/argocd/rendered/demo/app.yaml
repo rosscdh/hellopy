@@ -1,15 +1,24 @@
 apiVersion: v1
+data:
+  DEPLOY_VERSION: green
+  ENVIRONMENT_NAME: Mindcurv-Ed Talk
+kind: ConfigMap
+metadata:
+  name: dev-demo-cm-bb5fdbm2g9
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: dev-helloworld-svc
 spec:
   ports:
-  - port: 8000
+  - name: web
+    port: 8000
     protocol: TCP
-    targetPort: 8000
+    targetPort: web
   selector:
     app: helloworld
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -28,14 +37,15 @@ spec:
         app: helloworld
     spec:
       containers:
-      - env:
-        - name: DEPLOY_VERSION
-          value: jan is a shade of pink
+      - envFrom:
+        - configMapRef:
+            name: dev-demo-cm-bb5fdbm2g9
         image: rosscdh/hellopy:latest
         imagePullPolicy: Always
         name: kustomize-test
         ports:
         - containerPort: 8000
+          name: web
         resources:
           limits:
             cpu: 500m
@@ -44,12 +54,13 @@ spec:
             cpu: 210m
             memory: 64Mi
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: nginx
+    external-dns.alpha.kubernetes.io/managed: "true"
+    kubernetes.io/ingress.class: nginx-eks
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -62,9 +73,12 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: dev-helloworld-svc
-          servicePort: 8443
+          service:
+            name: dev-helloworld-svc
+            port:
+              name: web
         path: /
+        pathType: Prefix
   tls:
   - hosts:
     - hellopy.tes-build-nonprod.cookidoo.vorwerk-digital.com

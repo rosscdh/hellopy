@@ -1,3 +1,4 @@
 molten
+Jinja2
 gunicorn
 prometheus-client

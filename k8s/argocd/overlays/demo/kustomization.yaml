@@ -9,4 +9,10 @@ kind: Kustomization
 images:
 - name: hellopy-demo
   newName: rosscdh/hellopy-demo
-  newTag: 827392ea
+  newTag: 0.0.1
+
+configMapGenerator:
+- literals:
+  - ENVIRONMENT_NAME='Mindcurv-Ed Talk'
+  - DEPLOY_VERSION=green
+  name: demo-cm

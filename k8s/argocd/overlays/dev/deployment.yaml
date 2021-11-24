@@ -21,9 +21,6 @@ spec:
         ports:
         - name: web
           containerPort: 8000
-        envFrom:
-          - configMapRef:
-              name: demo-cm
         resources:
           requests:
             memory: "64Mi"
