@@ -40,4 +40,4 @@ jobs:
         with:
           address: ${{ secrets.ARGOCD_HOST }}
           token: ${{ secrets.ARGOCD_TOKEN }}
-          appName: "demo-uat"
+          appName: "hellopy-demo"
