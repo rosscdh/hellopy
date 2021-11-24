@@ -1,9 +1,10 @@
 apiVersion: v1
 data:
   DEPLOY_VERSION: This is my test that is green
+  ENVIRONMENT_NAME: Mindcurv-Ed Talk
 kind: ConfigMap
 metadata:
-  name: dev-demo-cm-2ddbh54kk9
+  name: dev-demo-cm-b4596fgdcb
 ---
 apiVersion: v1
 kind: Service
@@ -38,7 +39,7 @@ spec:
       containers:
       - envFrom:
         - configMapRef:
-            name: dev-demo-cm-2ddbh54kk9
+            name: dev-demo-cm-b4596fgdcb
         image: rosscdh/hellopy:latest
         imagePullPolicy: Always
         name: kustomize-test
