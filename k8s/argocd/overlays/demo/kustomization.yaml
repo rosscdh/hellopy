@@ -10,3 +10,8 @@ images:
 - name: hellopy-demo
   newName: rosscdh/hellopy-demo
   newTag: 0.0.1
+
+configMapGenerator:
+- literals:
+  - DEPLOY_VERSION='This is my test that is green'
+  name: demo-cm
