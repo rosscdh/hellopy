@@ -4,7 +4,7 @@ on:
     branches:
       - 'demo/*'
 jobs:
-  push-to-ecr:
+  build-test-push-deploy:
     runs-on: ubuntu-latest
     env:
       ENVIRONMENT: demo
