@@ -16,5 +16,5 @@ images:
 configMapGenerator:
 - literals:
   - ENVIRONMENT_NAME='Mindcurv-Ed Talk'
-  - DEPLOY_VERSION=blue
+  - DEPLOY_VERSION=red
   name: demo-cm

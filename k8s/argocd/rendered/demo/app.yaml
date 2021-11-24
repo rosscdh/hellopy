@@ -1,10 +1,10 @@
 apiVersion: v1
 data:
-  DEPLOY_VERSION: green
+  DEPLOY_VERSION: red
   ENVIRONMENT_NAME: Mindcurv-Ed Talk
 kind: ConfigMap
 metadata:
-  name: dev-demo-cm-bb5fdbm2g9
+  name: dev-demo-cm-btgd2chhtc
 ---
 apiVersion: v1
 kind: Service
@@ -39,7 +39,7 @@ spec:
       containers:
       - envFrom:
         - configMapRef:
-            name: dev-demo-cm-bb5fdbm2g9
+            name: dev-demo-cm-btgd2chhtc
         image: rosscdh/hellopy:latest
         imagePullPolicy: Always
         name: kustomize-test
