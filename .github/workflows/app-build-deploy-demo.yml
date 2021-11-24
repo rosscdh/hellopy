@@ -1,4 +1,4 @@
-name: UAT - Build Test, Push image to ECR and Generate k8s Manifest for ArgoCD
+name: DEMO - Build Test, Push Image then Generate k8s Manifest for ArgoCD
 on:
   push:
     branches:
@@ -42,5 +42,5 @@ jobs:
         uses: omegion/argocd-app-actions@master
         with:
           address: ${{ secrets.ARGOCD_HOST }}
-          token: ${{ secrets.DEMO_ARGOCD_TOKEN }}
+          token: ${{ secrets.ARGOCD_TOKEN }}
           appName: "demo-uat"
