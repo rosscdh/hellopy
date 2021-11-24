@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ DEPLOY_VERSION }} in {{ ENVIRONMENT_NAME }}{% endblock %}
+
+{% block css %}
+<style>
+#my-version {
+    background-color:{% if DEPLOY_VERSION != 'unknown' %}{{ DEPLOY_VERSION }}{% else %}pink{% endif %};
+    border-color:{% if DEPLOY_VERSION != 'unknown' %}{{ DEPLOY_VERSION }}{% else %}pink{% endif %};
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="jumbotron text-center">
+<div class="container">
+    <h1 class="jumbotron-heading">{{ ENVIRONMENT_NAME }}</h1>
+    <p class="lead text-muted">Here we are running {{ DEPLOY_VERSION }} in {{ ENVIRONMENT_NAME }}.</p>
+    <p>
+    <a href="#" class="btn btn-primary" id="my-version">{{ DEPLOY_VERSION }}</a>
+    </p>
+</div>
+</section>

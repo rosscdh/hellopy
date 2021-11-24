@@ -13,5 +13,6 @@ images:
 
 configMapGenerator:
 - literals:
+  - ENVIRONMENT_NAME='Mindcurv-Ed Talk'
   - DEPLOY_VERSION='This is my test that is green'
   name: demo-cm
