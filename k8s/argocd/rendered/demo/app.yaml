@@ -36,14 +36,14 @@ spec:
         app: helloworld
     spec:
       containers:
-      - image: rosscdh/hellopy:latest
+      - envFrom:
+        - configMapRef:
+            name: dev-demo-cm-2ddbh54kk9
+        image: rosscdh/hellopy:latest
         imagePullPolicy: Always
         name: kustomize-test
         ports:
         - containerPort: 8000
-          envFrom:
-          - configMapRef:
-              name: demo-cm
           name: web
         resources:
           limits:
