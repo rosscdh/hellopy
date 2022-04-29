@@ -1,0 +1,22 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: hellopy
+  description: |
+    Example app for backstage demo
+  links:
+    - title: Website
+      url: http://backstage.io
+    - title: Documentation
+      url: https://backstage.io/docs
+    - title: Storybook
+      url: https://backstage.io/storybook
+    - title: Discord Chat
+      url: https://discord.com/invite/EBHEGzX
+  annotations:
+    github.com/project-slug: rosscdh/hellopy
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: library
+  owner: github.com/rosscdh
+  lifecycle: experimental
