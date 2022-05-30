@@ -12,7 +12,7 @@ resources:
 configMapGenerator:
 - name: demo-cm
   literals:
-  - =
+  - test=true
 
 images:
 - name: hellopy-demo
