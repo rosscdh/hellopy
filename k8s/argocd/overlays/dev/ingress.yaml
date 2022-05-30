@@ -25,5 +25,5 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - hellopy.hello.com
+        - hellopy.kube.di.works
       secretName: hellopy-certificate-secret
