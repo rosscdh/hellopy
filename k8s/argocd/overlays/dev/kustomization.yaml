@@ -12,8 +12,8 @@ resources:
 configMapGenerator:
 - name: demo-cm
   literals:
-  - DEPLOY_VERSION: demo
-  - ENVIRONMENT_NAME: staging
+  - DEPLOY_VERSION=demo
+  - ENVIRONMENT_NAME=staging
 
 images:
 - name: hellopy-demo
