@@ -18,6 +18,9 @@ spec:
       - name: kustomize-test
         image: rosscdh/hellopy:latest
         imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+          name: demo-cm
         ports:
         - name: web
           containerPort: 8000
