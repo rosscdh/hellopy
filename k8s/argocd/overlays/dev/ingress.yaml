@@ -13,7 +13,7 @@ metadata:
   name: helloworld-ingress
 spec:
   rules:
-    - host: hellopy.kube.di.works
+    - host: hellopy.scimetic.di.works
       http:
         paths:
           - backend:
@@ -25,5 +25,5 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - hellopy.kube.di.works
+        - hellopy.scimetic.di.works
       secretName: hellopy-certificate-secret
