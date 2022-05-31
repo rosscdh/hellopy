@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
-          name: demo-cm
+            name: demo-cm
         ports:
         - name: web
           containerPort: 8000
