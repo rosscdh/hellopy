@@ -13,7 +13,7 @@ metadata:
   name: helloworld-ingress
 spec:
   rules:
-    - host: hellopy.scimetic.di.works
+    - host: hellopy.scimetic.net
       http:
         paths:
           - backend:
